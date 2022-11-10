@@ -2,7 +2,10 @@
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
+using System.Data;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
@@ -89,8 +92,11 @@ namespace RedirectFileExtension
 		private void Execute(object sender, EventArgs e)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
+			//string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
+			string message = "Opening the configuration file...";
 			string title = "RedirectProjectConfig";
+
+			CreateOrOpenConfig();
 
 			// Show a message box to prove we were here
 			VsShellUtilities.ShowMessageBox(
@@ -100,6 +106,45 @@ namespace RedirectFileExtension
 				OLEMSGICON.OLEMSGICON_INFO,
 				OLEMSGBUTTON.OLEMSGBUTTON_OK,
 				OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+		}
+
+		private static void CreateOrOpenConfig()
+		{
+			string configPath = "redirect.ini";
+			if (!File.Exists(configPath))
+			{
+				CreateConfig(configPath);
+			}
+
+			ProcessStartInfo psi = new ProcessStartInfo()
+			{
+				FileName = configPath,
+				UseShellExecute = true
+			};
+			Process.Start(psi);
+		}
+
+		private static void CreateConfig(string path)
+		{
+			string[] toFile =
+			{
+				"This a redirect config file - make sure the all the values are filled",
+				"\n",
+				"RedirectRepositoryUrl =  ",
+				"RedirectDirectoryPath = ",
+				"RealRepositoryUrl = ",
+				"RealRepositoryPath = ",
+				"Username = ",
+				"Mail = ",
+				"TokenPath = ",
+				"\n",
+				"[Optional]",
+				"BranchName = ",
+				"RemoteName = ",
+				"RefSpecs = "
+			};
+
+			File.WriteAllLines(path, toFile);
 		}
 	}
 }
