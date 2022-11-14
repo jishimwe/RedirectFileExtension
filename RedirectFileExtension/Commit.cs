@@ -1,7 +1,9 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -92,13 +94,24 @@ namespace RedirectFileExtension
 			string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
 			string title = "Commit";
 
+			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
+
+			string args = "-commit" +
+			              @" -f app\src\main\AndroidManifest.xml" +
+			              " -d " + config["RealRepositoryPath"] +
+			              " -m \"Visual Studio extensions commit\"" +
+			              " -u " + config["Username"] +
+			              " -e " + config["Mail"];
+
+			message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
+
 			// Show a message box to prove we were here
 			VsShellUtilities.ShowMessageBox(
 				this.package,
-				message,
-				title,
-				OLEMSGICON.OLEMSGICON_INFO,
-				OLEMSGBUTTON.OLEMSGBUTTON_OK,
+				message, 
+				title, 
+				OLEMSGICON.OLEMSGICON_INFO, 
+				OLEMSGBUTTON.OLEMSGBUTTON_OK, 
 				OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
 		}
 	}

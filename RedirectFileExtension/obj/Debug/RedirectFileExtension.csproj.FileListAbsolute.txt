@@ -11,7 +11,6 @@ C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\VS
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\VSCT.write.1.tlog
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\resources.json
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\ctoFiles.json
-C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\_EmptyResource.resources.original
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\mergeCto.cache
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\RedirectFileExtension.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\RedirectFileExtension.csproj.CoreCompileInputs.cache

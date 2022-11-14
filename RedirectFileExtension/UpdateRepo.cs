@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Globalization;
 using System.Threading;
@@ -90,7 +91,17 @@ namespace RedirectFileExtension
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 			string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-			string title = "UpdateRepo";
+			string title = "Update Repo";
+
+			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
+
+			string args = "-update" +
+			              " -d " + config["RealRepositoryPath"] +
+			              " -u " + config["Username"] +
+			              " -e " + config["Mail"] +
+			              " -t " + config["TokenPath"];
+
+			message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
 
 			// Show a message box to prove we were here
 			VsShellUtilities.ShowMessageBox(

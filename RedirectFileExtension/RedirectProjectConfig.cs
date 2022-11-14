@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Data;
 using System.Diagnostics;
@@ -8,7 +9,9 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.RpcContracts.DiagnosticManagement;
 using Task = System.Threading.Tasks.Task;
+using System.Windows.Forms;
 
 namespace RedirectFileExtension
 {
@@ -31,6 +34,19 @@ namespace RedirectFileExtension
 		/// VS Package that provides this command, not null.
 		/// </summary>
 		private readonly AsyncPackage package;
+
+		private static readonly string _configPath = "redirect.ini";
+
+		public static readonly string _redirectUtilitiesPath =
+			@"C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\RedirectFilesUtilities\RedirectFilesUtilities.exe";
+
+		public static readonly ProcessStartInfo psiUtilities = new ProcessStartInfo()
+		{
+			FileName = _redirectUtilitiesPath,
+			UseShellExecute = false,
+			RedirectStandardOutput = true,
+			RedirectStandardError = true
+		};
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RedirectProjectConfig"/> class.
@@ -98,6 +114,8 @@ namespace RedirectFileExtension
 
 			CreateOrOpenConfig();
 
+			//IDictionary<string, string> config = ReadConfig();
+
 			// Show a message box to prove we were here
 			VsShellUtilities.ShowMessageBox(
 				this.package,
@@ -110,15 +128,14 @@ namespace RedirectFileExtension
 
 		private static void CreateOrOpenConfig()
 		{
-			string configPath = "redirect.ini";
-			if (!File.Exists(configPath))
+			if (!File.Exists(_configPath))
 			{
-				CreateConfig(configPath);
+				CreateConfig(_configPath);
 			}
 
 			ProcessStartInfo psi = new ProcessStartInfo()
 			{
-				FileName = configPath,
+				FileName = _configPath,
 				UseShellExecute = true
 			};
 			Process.Start(psi);
@@ -128,7 +145,7 @@ namespace RedirectFileExtension
 		{
 			string[] toFile =
 			{
-				"This a redirect config file - make sure the all the values are filled",
+				"Usage: This a redirect config file - make sure the all the values are filled",
 				"\n",
 				"RedirectRepositoryUrl =  ",
 				"RedirectDirectoryPath = ",
@@ -145,6 +162,46 @@ namespace RedirectFileExtension
 			};
 
 			File.WriteAllLines(path, toFile);
+		}
+
+		public static IDictionary<string, string> ReadConfig()
+		{
+			IDictionary<string, string> config = new Dictionary<string, string>();
+			if (File.Exists(_configPath))
+			{
+				StreamReader file = new StreamReader(_configPath);
+				string ln = file.ReadLine();
+				while ((ln = file.ReadLine()) != null) 
+				{
+					if (string.IsNullOrEmpty(ln) || string.IsNullOrWhiteSpace(ln))
+					{
+						continue;
+					}
+					string[] stabs = ln.Split(' ');
+					if (stabs.Length == 3)
+					{
+						config.Add(stabs[0], stabs[2]);
+					}
+				}
+			}
+
+			return config;
+		}
+
+		public static string StartUtilitiesProcess(string args)
+		{
+			ProcessStartInfo psi = psiUtilities;
+			psi.Arguments = args;
+			Process proc = new Process() { StartInfo = psi };
+			proc.Start();
+
+			while (!proc.StandardOutput.EndOfStream || !proc.StandardError.EndOfStream)
+			{
+				string line = proc.StandardOutput.ReadToEnd();
+				return string.IsNullOrEmpty(line) ? proc.StandardError.ReadToEnd() : line;
+			}
+
+			return null;
 		}
 	}
 }

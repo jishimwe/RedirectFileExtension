@@ -1,7 +1,9 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -92,13 +94,23 @@ namespace RedirectFileExtension
 			string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
 			string title = "Push";
 
+			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
+
+			string args = "-push" +
+			              " -d " + config["RealRepositoryPath"] +
+			              " -t " + config["TokenPath"] +
+			              " -u " + config["Username"] + 
+			              " -e " + config["Mail"];
+
+			message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
+
 			// Show a message box to prove we were here
 			VsShellUtilities.ShowMessageBox(
-				this.package,
-				message,
+				this.package, 
+				message, 
 				title,
 				OLEMSGICON.OLEMSGICON_INFO,
-				OLEMSGBUTTON.OLEMSGBUTTON_OK,
+				OLEMSGBUTTON.OLEMSGBUTTON_OK, 
 				OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
 		}
 	}

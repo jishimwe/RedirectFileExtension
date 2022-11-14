@@ -1,7 +1,10 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.PlatformUI;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,6 +12,17 @@ using Task = System.Threading.Tasks.Task;
 
 namespace RedirectFileExtension
 {
+	//TODO: Eventually refactor class DialogWindow
+	class DialogWindowRedirect : DialogWindow
+	{
+		internal DialogWindowRedirect()
+		{
+			this.HasMaximizeButton = true;
+			this.HasMinimizeButton = true;
+		}
+	}
+
+
 	/// <summary>
 	/// Command handler
 	/// </summary>
@@ -90,7 +104,19 @@ namespace RedirectFileExtension
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 			string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-			string title = "OpenFromRedir";
+			string title = "Open From Redirect";
+
+			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
+
+			string args = "-open " +
+			              "-r " + config["RedirectDirectoryPath"] + @"\app\src\main\AndroidManifest.xml.redir " +
+			              "-d " + config["RealRepositoryPath"] + " " +
+			              "-b " + config["BranchName"];
+
+			message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
+
+			//DialogWindowRedirect dw = new DialogWindowRedirect();
+			//dw.ShowModal();
 
 			// Show a message box to prove we were here
 			VsShellUtilities.ShowMessageBox(
