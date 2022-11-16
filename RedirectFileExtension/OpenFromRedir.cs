@@ -8,6 +8,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using Microsoft.Internal.VisualStudio.PlatformUI;
 using Task = System.Threading.Tasks.Task;
 
 namespace RedirectFileExtension
@@ -15,10 +17,24 @@ namespace RedirectFileExtension
 	//TODO: Eventually refactor class DialogWindow
 	class DialogWindowRedirect : DialogWindow
 	{
+		private DialogButton okButton, cancelButton;
+		private Label[] labels;
+		private EditableItemTextBox[] editableItems;
+		private TextInputDialog[] textInputs;
+		private TextBox[] textBoxes;
+
 		internal DialogWindowRedirect()
 		{
 			this.HasMaximizeButton = true;
 			this.HasMinimizeButton = true;
+		}
+
+		internal DialogWindowRedirect(Dictionary<string, string> config, params string[] args)
+		{
+			foreach (var entry in config)
+			{
+				
+			}
 		}
 	}
 

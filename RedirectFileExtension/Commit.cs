@@ -103,6 +103,11 @@ namespace RedirectFileExtension
 			              " -u " + config["Username"] +
 			              " -e " + config["Mail"];
 
+			config.Add("Message", "");
+			config.Add("Filepath", "");
+
+			UserControl1 userControl1 = new UserControl1(config);
+
 			message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
 
 			// Show a message box to prove we were here
