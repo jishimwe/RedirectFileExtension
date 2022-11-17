@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using Microsoft.VisualStudio.Package;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
 namespace RedirectFileExtension
@@ -91,24 +93,40 @@ namespace RedirectFileExtension
 		private void Execute(object sender, EventArgs e)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
+			string message = "Commit Failed . . .";
 			string title = "Commit";
 
 			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
 
 			string args = "-commit" +
 			              @" -f app\src\main\AndroidManifest.xml" +
-			              " -d " + config["RealRepositoryPath"] +
+			              " -d " + config[RedirectProjectConfig.RealRepositoryPath] +
 			              " -m \"Visual Studio extensions commit\"" +
-			              " -u " + config["Username"] +
-			              " -e " + config["Mail"];
+			              " -u " + config[RedirectProjectConfig.Username ] +
+			              " -e " + config[RedirectProjectConfig.Mail];
+			IDictionary<string, string> data = new Dictionary<string, string>()
+			{
+				{ RedirectProjectConfig.RealRepositoryPath, config[RedirectProjectConfig.RealRepositoryPath] },
+				{ RedirectProjectConfig.Username, config[RedirectProjectConfig.Username] },
+				{ RedirectProjectConfig.Mail, config[RedirectProjectConfig.Mail] },
+				{ RedirectProjectConfig.Message, ""},
+				{ RedirectProjectConfig.Filepath, ""}
+			};
 
-			config.Add("Message", "");
-			config.Add("Filepath", "");
+			MyForm form = new MyForm(data, "Commit");
+			DialogResult result = form.ShowDialog();
+			if (result == DialogResult.OK)
+			{
+				data = form.data;
+				args = "-commit" +
+				" -f " + data[RedirectProjectConfig.Filepath] +
+				" -d " + data[RedirectProjectConfig.RealRepositoryPath] +
+				" -m " + data[RedirectProjectConfig.Message] +
+				" -u " + data[RedirectProjectConfig.Username] +
+				" -e " + data[RedirectProjectConfig.Mail];
 
-			UserControl1 userControl1 = new UserControl1(config);
-
-			message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
+				message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
+			}
 
 			// Show a message box to prove we were here
 			VsShellUtilities.ShowMessageBox(

@@ -35,6 +35,22 @@ namespace RedirectFileExtension
 		/// </summary>
 		private readonly AsyncPackage package;
 
+		// Constants
+		public static readonly string RedirectRepositoryUrl = "RedirectRepositoryUrl",
+			RedirectDirectoryPath = "RedirectDirectoryPath",
+			RealRepositoryUrl = "RealRepositoryUrl",
+			RealRepositoryPath = "RealRepositoryPath",
+			Username = "Username",
+			Mail = "Mail",
+			TokenPath = "TokenPath",
+			BranchName = "BranchName",
+			RemoteName = "RemoteName",
+			RefSpecs = "RefSpecs",
+			Filepath = "Filepath",
+			Message = "Message",
+			RedirectFile = "RedirectFile",
+			MergeOptions = "MergeOptions";
+
 		private static readonly string _configPath = "redirect.ini";
 
 		public static readonly string _redirectUtilitiesPath =
@@ -147,18 +163,18 @@ namespace RedirectFileExtension
 			{
 				"Usage: This a redirect config file - make sure the all the values are filled",
 				"\n",
-				"RedirectRepositoryUrl =  ",
-				"RedirectDirectoryPath = ",
-				"RealRepositoryUrl = ",
-				"RealRepositoryPath = ",
-				"Username = ",
-				"Mail = ",
-				"TokenPath = ",
+				RedirectRepositoryUrl +" =  ",
+				RedirectDirectoryPath + " = ",
+				RealRepositoryUrl + " = ",
+				RealRepositoryPath + " = ",
+				Username + " = ",
+				Mail + " = ",
+				TokenPath + " = ",
 				"\n",
 				"[Optional]",
-				"BranchName = ",
-				"RemoteName = ",
-				"RefSpecs = "
+				BranchName + " = ",
+				RemoteName + " = ",
+				RefSpecs + " = "
 			};
 
 			File.WriteAllLines(path, toFile);

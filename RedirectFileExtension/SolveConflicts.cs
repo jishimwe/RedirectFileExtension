@@ -6,6 +6,7 @@ using System.ComponentModel.Design;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
 namespace RedirectFileExtension
@@ -96,11 +97,30 @@ namespace RedirectFileExtension
 			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
 
 			string args = "-merge 0" +
-			              " -d " + config["RealRepositoryPath"] +
-			              " -u " + config["Username"] + 
-			              " -e " + config["Mail"];
+			              " -d " + config[RedirectProjectConfig.RealRepositoryPath] +
+			              " -u " + config[RedirectProjectConfig.Username] + 
+			              " -e " + config[RedirectProjectConfig.Mail];
 
-			message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
+			IDictionary<string, string> data = new Dictionary<string, string>()
+			{
+				{ RedirectProjectConfig.MergeOptions, "" },
+				{ RedirectProjectConfig.RealRepositoryPath, config[RedirectProjectConfig.RealRepositoryPath] },
+				{ RedirectProjectConfig.Username, config[RedirectProjectConfig.Username] },
+				{ RedirectProjectConfig.Mail, config[RedirectProjectConfig.Mail] }
+			};
+
+			MyForm form = new MyForm(data, "Merge");
+			DialogResult result = form.ShowDialog();
+			if(result == DialogResult.OK)
+			{
+				data = form.data;
+				args = "-merge " + data[RedirectProjectConfig.MergeOptions] +
+					" -d " + data[RedirectProjectConfig.RealRepositoryPath] +
+					" -u " + data[RedirectProjectConfig.Username] +
+					" -e " + data[RedirectProjectConfig.Mail];
+
+				message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
+			}
 
 			// Show a message box to prove we were here
 			VsShellUtilities.ShowMessageBox(

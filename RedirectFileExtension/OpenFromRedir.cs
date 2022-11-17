@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.PlatformUI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -9,36 +8,11 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using Microsoft.Internal.VisualStudio.PlatformUI;
+using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
 namespace RedirectFileExtension
 {
-	//TODO: Eventually refactor class DialogWindow
-	class DialogWindowRedirect : DialogWindow
-	{
-		private DialogButton okButton, cancelButton;
-		private Label[] labels;
-		private EditableItemTextBox[] editableItems;
-		private TextInputDialog[] textInputs;
-		private TextBox[] textBoxes;
-
-		internal DialogWindowRedirect()
-		{
-			this.HasMaximizeButton = true;
-			this.HasMinimizeButton = true;
-		}
-
-		internal DialogWindowRedirect(Dictionary<string, string> config, params string[] args)
-		{
-			foreach (var entry in config)
-			{
-				
-			}
-		}
-	}
-
-
 	/// <summary>
 	/// Command handler
 	/// </summary>
@@ -119,20 +93,36 @@ namespace RedirectFileExtension
 		private void Execute(object sender, EventArgs e)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
+			string message = "Could not open file from redirect";
 			string title = "Open From Redirect";
 
 			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
 
 			string args = "-open " +
 			              "-r " + config["RedirectDirectoryPath"] + @"\app\src\main\AndroidManifest.xml.redir " +
-			              "-d " + config["RealRepositoryPath"] + " " +
-			              "-b " + config["BranchName"];
+			              "-d " + config[RedirectProjectConfig.RealRepositoryPath] + " " +
+			              "-b " + config[RedirectProjectConfig.BranchName];
 
-			message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
+			IDictionary<string, string> data = new Dictionary<string, string>()
+			{
+				{ RedirectProjectConfig.RealRepositoryPath, config[RedirectProjectConfig.RealRepositoryPath]},
+				{ RedirectProjectConfig.BranchName, config[RedirectProjectConfig.BranchName]},
+				{ RedirectProjectConfig.RedirectFile, "" }
+			};
 
-			//DialogWindowRedirect dw = new DialogWindowRedirect();
-			//dw.ShowModal();
+			MyForm form = new MyForm(data, "Open File from Redirect");
+			DialogResult result = form.ShowDialog();
+
+			if (result == DialogResult.OK)
+			{
+				data = form.data;
+				args = "-open" +
+					" -r " + data[RedirectProjectConfig.RedirectFile] + 
+					" -d " + data[RedirectProjectConfig.RealRepositoryPath] + 
+					" -b " + data[RedirectProjectConfig.BranchName];
+
+				message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
+			}
 
 			// Show a message box to prove we were here
 			VsShellUtilities.ShowMessageBox(

@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
 namespace RedirectFileExtension
@@ -91,18 +92,38 @@ namespace RedirectFileExtension
 		private void Execute(object sender, EventArgs e)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
+			string message = "Push not executed";
 			string title = "Push";
 
 			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
 
 			string args = "-push" +
-			              " -d " + config["RealRepositoryPath"] +
-			              " -t " + config["TokenPath"] +
-			              " -u " + config["Username"] + 
-			              " -e " + config["Mail"];
+			              " -d " + config[RedirectProjectConfig.RealRepositoryPath] +
+			              " -t " + config[RedirectProjectConfig.TokenPath] +
+			              " -u " + config[RedirectProjectConfig.Username] + 
+			              " -e " + config[RedirectProjectConfig.Mail];
 
-			message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
+			IDictionary<string, string> data = new Dictionary<string, string>()
+			{
+				{ RedirectProjectConfig.RealRepositoryPath, config[RedirectProjectConfig.RealRepositoryPath] },
+				{ RedirectProjectConfig.TokenPath, config[RedirectProjectConfig.TokenPath] },
+				{ RedirectProjectConfig.Username, config[RedirectProjectConfig.Username] },
+				{ RedirectProjectConfig.Mail, config[RedirectProjectConfig.Mail] },
+			};
+
+			MyForm form = new MyForm(data, "Push");
+			DialogResult result = form.ShowDialog();
+			if (result == DialogResult.OK)
+			{
+				data = form.data;
+				args = "-push" +
+						  " -d " + data[RedirectProjectConfig.RealRepositoryPath] +
+						  " -t " + data[RedirectProjectConfig.TokenPath] +
+						  " -u " + data[RedirectProjectConfig.Username] +
+						  " -e " + data[RedirectProjectConfig.Mail];
+
+				message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
+			}
 
 			// Show a message box to prove we were here
 			VsShellUtilities.ShowMessageBox(
