@@ -5,6 +5,7 @@ C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\bin\Debug\Re
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\bin\Debug\extension.vsixmanifest
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\RedirectFileExtension.csproj.AssemblyReference.cache
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\_EmptyResource.resources
+C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\RedirectFileExtension.MyForm.resources
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\RedirectFileExtension.csproj.GenerateResource.cache
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\RedirectFileExtensionPackage.cto
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\VSCT.read.1.tlog
@@ -21,5 +22,4 @@ C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\Re
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\extension.vsixmanifest
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\files.json
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\createTemplateManifests.cache
-C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\RedirectFileExtension.UserControl1.resources
-C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\RedirectFileExtension.MyForm.resources
+C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\_EmptyResource.resources.original

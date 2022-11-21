@@ -1,25 +1,26 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using Microsoft.VisualStudio.PlatformUI.OleComponentSupport;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Collections.Generic;
 using Task = System.Threading.Tasks.Task;
+using System.Windows.Forms;
 
 namespace RedirectFileExtension
 {
 	/// <summary>
 	/// Command handler
 	/// </summary>
-	internal sealed class ForcePush
+	internal sealed class AddFile
 	{
 		/// <summary>
 		/// Command ID.
 		/// </summary>
-		public const int CommandId = 4131;
+		public const int CommandId = 4135;
 
 		/// <summary>
 		/// Command menu group (command set GUID).
@@ -32,12 +33,12 @@ namespace RedirectFileExtension
 		private readonly AsyncPackage package;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ForcePush"/> class.
+		/// Initializes a new instance of the <see cref="AddFile"/> class.
 		/// Adds our command handlers for menu (commands must exist in the command table file)
 		/// </summary>
 		/// <param name="package">Owner package, not null.</param>
 		/// <param name="commandService">Command service to add command to, not null.</param>
-		private ForcePush(AsyncPackage package, OleMenuCommandService commandService)
+		private AddFile(AsyncPackage package, OleMenuCommandService commandService)
 		{
 			this.package = package ?? throw new ArgumentNullException(nameof(package));
 			commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
@@ -50,7 +51,7 @@ namespace RedirectFileExtension
 		/// <summary>
 		/// Gets the instance of the command.
 		/// </summary>
-		public static ForcePush Instance
+		public static AddFile Instance
 		{
 			get;
 			private set;
@@ -73,12 +74,12 @@ namespace RedirectFileExtension
 		/// <param name="package">Owner package, not null.</param>
 		public static async Task InitializeAsync(AsyncPackage package)
 		{
-			// Switch to the main thread - the call to AddCommand in ForcePush's constructor requires
+			// Switch to the main thread - the call to AddCommand in AddFile's constructor requires
 			// the UI thread.
 			await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
 			OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-			Instance = new ForcePush(package, commandService);
+			Instance = new AddFile(package, commandService);
 		}
 
 		/// <summary>
@@ -91,35 +92,36 @@ namespace RedirectFileExtension
 		private void Execute(object sender, EventArgs e)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			string message = "Force push not executed";
-			string title = "Force Push";
+			string message = "Failed to add file";
+			string title = "Add File";
 
 			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
 
-			string args = "-forcePush" +
-				" -d " + config[RedirectProjectConfig.RealRepositoryPath] +
-				" -t " + config[RedirectProjectConfig.TokenPath] +
-				" -u " + config[RedirectProjectConfig.Username] +
-				" -e " + config[RedirectProjectConfig.Mail];
+			string args = "-add";
 
 			IDictionary<string, string> data = new Dictionary<string, string>()
 			{
 				{ RedirectProjectConfig.RealRepositoryPath, config[RedirectProjectConfig.RealRepositoryPath] },
-				{ RedirectProjectConfig.TokenPath, config[RedirectProjectConfig.TokenPath] },
+				{ RedirectProjectConfig.RedirectDirectoryPath, config[RedirectProjectConfig.RedirectDirectoryPath] },
 				{ RedirectProjectConfig.Username, config[RedirectProjectConfig.Username] },
 				{ RedirectProjectConfig.Mail, config[RedirectProjectConfig.Mail] },
+				{ RedirectProjectConfig.TokenPath, config[RedirectProjectConfig.TokenPath] },
+				{ RedirectProjectConfig.Filepath, "" }
 			};
 
-			MyForm form = new MyForm(data, "Force Push");
+			MyForm form = new MyForm(data, "Add File");
 			DialogResult result = form.ShowDialog();
-			if (result == DialogResult.OK)
+
+			if(result == DialogResult.OK)
 			{
 				data = form.data;
-				args = "-forcePush" +
-						  " -d " + data[RedirectProjectConfig.RealRepositoryPath] +
-						  " -t " + data[RedirectProjectConfig.TokenPath] +
-						  " -u " + data[RedirectProjectConfig.Username] +
-						  " -e " + data[RedirectProjectConfig.Mail];
+				args = "-add" +
+					" -d " + data[RedirectProjectConfig.RealRepositoryPath] +
+					" -f " + data[RedirectProjectConfig.Filepath] +
+					" -r " + data[RedirectProjectConfig.RedirectDirectoryPath] +
+					" -u " + data[RedirectProjectConfig.Username] +
+					" -e " + data[RedirectProjectConfig.Mail] +
+					" -t " + data[RedirectProjectConfig.TokenPath];
 
 				message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
 			}

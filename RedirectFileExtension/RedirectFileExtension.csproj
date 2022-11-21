@@ -35,6 +35,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DeployExtension>True</DeployExtension>
+    <CreateVsixContainer>True</CreateVsixContainer>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -45,6 +47,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AddFile.cs" />
     <Compile Include="Commit.cs" />
     <Compile Include="ForcePush.cs" />
     <Compile Include="MyForm.cs">
@@ -60,12 +63,6 @@
     <Compile Include="RedirectProjectConfig.cs" />
     <Compile Include="SolveConflicts.cs" />
     <Compile Include="UpdateRepo.cs" />
-    <Compile Include="UserControl1.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UserControl1.Designer.cs">
-      <DependentUpon>UserControl1.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="source.extension.vsixmanifest">
@@ -95,7 +92,26 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\AddFile.png" />
+    <Content Include="Resources\Cloud.png" />
+    <Content Include="Resources\CloudBlobs.png" />
+    <Content Include="Resources\CloudBusinessApplication.png" />
+    <Content Include="Resources\CloudConfigurationFile.png" />
+    <Content Include="Resources\CloudConsole.png" />
+    <Content Include="Resources\CloudDownload.png" />
+    <Content Include="Resources\CloudError.png" />
+    <Content Include="Resources\CloudFile.png" />
+    <Content Include="Resources\CloudGroup.png" />
+    <Content Include="Resources\CloudOK.png" />
+    <Content Include="Resources\CloudRefresh.png" />
+    <Content Include="Resources\CloudRun.png" />
+    <Content Include="Resources\CloudServer.png" />
+    <Content Include="Resources\CloudStaging.png" />
+    <Content Include="Resources\CloudUpload.png" />
     <Content Include="Resources\Commit.png" />
+    <Content Include="Resources\FileEncodingDialog.png" />
+    <Content Include="Resources\FileSystemDriverFile.png" />
+    <Content Include="Resources\FileType.png" />
     <Content Include="Resources\ForcePush.png" />
     <Content Include="Resources\OpenFromRedir.png" />
     <Content Include="Resources\Push.png" />
@@ -106,9 +122,6 @@
   <ItemGroup>
     <EmbeddedResource Include="MyForm.resx">
       <DependentUpon>MyForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UserControl1.resx">
-      <DependentUpon>UserControl1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -54,6 +54,7 @@ namespace RedirectFileExtension
 		    await UpdateRepo.InitializeAsync(this);
 		    await SolveConflicts.InitializeAsync(this);
 		    await RedirectProjectConfig.InitializeAsync(this);
+		    await AddFile.InitializeAsync(this);
 		}
 
 		#endregion
