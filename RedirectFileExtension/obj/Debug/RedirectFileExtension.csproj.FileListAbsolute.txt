@@ -22,4 +22,3 @@ C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\Re
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\extension.vsixmanifest
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\files.json
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\createTemplateManifests.cache
-C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\_EmptyResource.resources.original

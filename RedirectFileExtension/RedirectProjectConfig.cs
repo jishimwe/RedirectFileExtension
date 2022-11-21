@@ -144,17 +144,46 @@ namespace RedirectFileExtension
 
 		private static void CreateOrOpenConfig()
 		{
-			if (!File.Exists(_configPath))
+			FileInfo fi = new FileInfo(_configPath);
+			if (!fi.Exists)
 			{
 				CreateConfig(_configPath);
 			}
 
-			ProcessStartInfo psi = new ProcessStartInfo()
+			IDictionary<string, string> config = ReadConfig();
+			MyForm form = new MyForm(config, "Configuration");
+			DialogResult result = form.ShowDialog();
+
+			if (result == DialogResult.OK)
+			{
+				string[] toFile =
+				{
+					"Usage: This a redirect config file - make sure the all the values are filled",
+					"\n",
+					RedirectRepositoryUrl + " = " + config[RedirectRepositoryUrl],
+					RedirectDirectoryPath + " = " + config[RedirectDirectoryPath],
+					RealRepositoryUrl + " = " + config[RealRepositoryUrl],
+					RealRepositoryPath + " = " + config[RealRepositoryPath],
+					Username + " = " + config[Username],
+					Mail + " = " + config[Mail],
+					TokenPath + " = " + config[TokenPath],
+					"\n",
+					"[Optional]",
+					BranchName + " = " + config[BranchName],
+					RemoteName + " = " + config[RemoteName],
+					RefSpecs + " = " + config[RefSpecs]
+				};
+				//File.WriteAllLines(_configPath, toFile);
+				
+				File.WriteAllText(_configPath, string.Join("\n", toFile));
+			}
+
+			/*ProcessStartInfo psi = new ProcessStartInfo()
 			{
 				FileName = _configPath,
 				UseShellExecute = true
 			};
-			Process.Start(psi);
+			Process.Start(psi);*/
 		}
 
 		private static void CreateConfig(string path)
@@ -199,6 +228,7 @@ namespace RedirectFileExtension
 						config.Add(stabs[0], stabs[2]);
 					}
 				}
+				file.Close();
 			}
 
 			return config;
