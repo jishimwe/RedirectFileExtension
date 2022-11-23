@@ -102,15 +102,15 @@ namespace RedirectFileExtension
 			              " -e " + config[RedirectProjectConfig.Mail] +
 			              " -t " + config[RedirectProjectConfig.TokenPath];
 
-			IDictionary<string, string> data = new Dictionary<string, string>()
+			/*IDictionary<string, string> data = new Dictionary<string, string>()
 			{
 				{ RedirectProjectConfig.RealRepositoryPath, config[RedirectProjectConfig.RealRepositoryPath] },
 				{ RedirectProjectConfig.Username, config[RedirectProjectConfig.Username] },
 				{ RedirectProjectConfig.Mail, config[RedirectProjectConfig.Mail] },
 				{ RedirectProjectConfig.TokenPath, config[RedirectProjectConfig.TokenPath] }
-			};
+			};*/
 
-			MyForm form = new MyForm(data, "Update");
+			/*MyForm form = new MyForm(data, "Update");
 			DialogResult result = form.ShowDialog();
 			if(result == DialogResult.OK)
 			{
@@ -122,7 +122,8 @@ namespace RedirectFileExtension
 					 " -t " + data[RedirectProjectConfig.TokenPath];
 
 				message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
-			}
+			}*/
+			message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
 
 			// Show a message box to prove we were here
 			VsShellUtilities.ShowMessageBox(

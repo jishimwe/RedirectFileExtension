@@ -102,7 +102,7 @@ namespace RedirectFileExtension
 				" -u " + config[RedirectProjectConfig.Username] +
 				" -e " + config[RedirectProjectConfig.Mail];
 
-			IDictionary<string, string> data = new Dictionary<string, string>()
+			/*IDictionary<string, string> data = new Dictionary<string, string>()
 			{
 				{ RedirectProjectConfig.RealRepositoryPath, config[RedirectProjectConfig.RealRepositoryPath] },
 				{ RedirectProjectConfig.TokenPath, config[RedirectProjectConfig.TokenPath] },
@@ -122,7 +122,9 @@ namespace RedirectFileExtension
 						  " -e " + data[RedirectProjectConfig.Mail];
 
 				message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
-			}
+			}*/
+
+			message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
 
 			// Show a message box to prove we were here
 			VsShellUtilities.ShowMessageBox(

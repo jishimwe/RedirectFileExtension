@@ -93,7 +93,8 @@ namespace RedirectFileExtension
 		private void Execute(object sender, EventArgs e)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			string message = "Commit Failed . . .";
+			string commitResult = "Commit Failed . . .",
+				pushResult = "Upload Failed";
 			string title = "Commit";
 
 			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
@@ -106,32 +107,37 @@ namespace RedirectFileExtension
 			              " -e " + config[RedirectProjectConfig.Mail];
 			IDictionary<string, string> data = new Dictionary<string, string>()
 			{
-				{ RedirectProjectConfig.RealRepositoryPath, config[RedirectProjectConfig.RealRepositoryPath] },
-				{ RedirectProjectConfig.Username, config[RedirectProjectConfig.Username] },
-				{ RedirectProjectConfig.Mail, config[RedirectProjectConfig.Mail] },
 				{ RedirectProjectConfig.Message, ""},
 				{ RedirectProjectConfig.Filepath, ""}
 			};
 
-			MyForm form = new MyForm(data, "Commit");
+			MyForm form = new MyForm(data, "Commit", config);
 			DialogResult result = form.ShowDialog();
 			if (result == DialogResult.OK)
 			{
 				data = form.data;
 				args = "-commit" +
 				" -f " + data[RedirectProjectConfig.Filepath] +
-				" -d " + data[RedirectProjectConfig.RealRepositoryPath] +
+				" -d " + config[RedirectProjectConfig.RealRepositoryPath] +
 				" -m " + data[RedirectProjectConfig.Message] +
-				" -u " + data[RedirectProjectConfig.Username] +
-				" -e " + data[RedirectProjectConfig.Mail];
+				" -u " + config[RedirectProjectConfig.Username] +
+				" -e " + config[RedirectProjectConfig.Mail];
 
-				message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
+				commitResult = RedirectProjectConfig.StartUtilitiesProcess(args) ?? commitResult;
+
+				args = "-push" +
+				       " -d " + config[RedirectProjectConfig.RealRepositoryPath] +
+				       " -t " + config[RedirectProjectConfig.TokenPath] +
+				       " -u " + config[RedirectProjectConfig.Username] +
+				       " -e " + config[RedirectProjectConfig.Mail];
+
+				pushResult = RedirectProjectConfig.StartUtilitiesProcess(args) ?? pushResult;
 			}
 
 			// Show a message box to prove we were here
 			VsShellUtilities.ShowMessageBox(
 				this.package,
-				message, 
+				pushResult, 
 				title, 
 				OLEMSGICON.OLEMSGICON_INFO, 
 				OLEMSGBUTTON.OLEMSGBUTTON_OK, 

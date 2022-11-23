@@ -98,19 +98,14 @@ namespace RedirectFileExtension
 
 			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
 
-			string args = "-open " +
-			              "-r " + config["RedirectDirectoryPath"] + @"\app\src\main\AndroidManifest.xml.redir " +
-			              "-d " + config[RedirectProjectConfig.RealRepositoryPath] + " " +
-			              "-b " + config[RedirectProjectConfig.BranchName];
+			string args = "-open ";
 
 			IDictionary<string, string> data = new Dictionary<string, string>()
 			{
-				{ RedirectProjectConfig.RealRepositoryPath, config[RedirectProjectConfig.RealRepositoryPath]},
-				{ RedirectProjectConfig.BranchName, config[RedirectProjectConfig.BranchName]},
 				{ RedirectProjectConfig.RedirectFile, "" }
 			};
 
-			MyForm form = new MyForm(data, "Open File from Redirect");
+			MyForm form = new MyForm(data, "Open File from Redirect", config, true);
 			DialogResult result = form.ShowDialog();
 
 			if (result == DialogResult.OK)
@@ -118,8 +113,8 @@ namespace RedirectFileExtension
 				data = form.data;
 				args = "-open" +
 					" -r " + data[RedirectProjectConfig.RedirectFile] + 
-					" -d " + data[RedirectProjectConfig.RealRepositoryPath] + 
-					" -b " + data[RedirectProjectConfig.BranchName];
+					" -d " + config[RedirectProjectConfig.RealRepositoryPath] + 
+					" -b " + config[RedirectProjectConfig.BranchName];
 
 				message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
 			}

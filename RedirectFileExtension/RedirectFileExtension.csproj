@@ -112,6 +112,7 @@
     <Content Include="Resources\FileEncodingDialog.png" />
     <Content Include="Resources\FileSystemDriverFile.png" />
     <Content Include="Resources\FileType.png" />
+    <Content Include="Resources\FolderOpenedNoColor.png" />
     <Content Include="Resources\ForcePush.png" />
     <Content Include="Resources\OpenFromRedir.png" />
     <Content Include="Resources\Push.png" />
@@ -120,6 +121,9 @@
     <Content Include="Resources\UpdateRepo.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="MyForm.en.resx">
+      <DependentUpon>MyForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MyForm.resx">
       <DependentUpon>MyForm.cs</DependentUpon>
     </EmbeddedResource>

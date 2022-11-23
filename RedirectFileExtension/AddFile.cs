@@ -100,27 +100,22 @@ namespace RedirectFileExtension
 
 			IDictionary<string, string> data = new Dictionary<string, string>()
 			{
-				{ RedirectProjectConfig.RealRepositoryPath, config[RedirectProjectConfig.RealRepositoryPath] },
-				{ RedirectProjectConfig.RedirectDirectoryPath, config[RedirectProjectConfig.RedirectDirectoryPath] },
-				{ RedirectProjectConfig.Username, config[RedirectProjectConfig.Username] },
-				{ RedirectProjectConfig.Mail, config[RedirectProjectConfig.Mail] },
-				{ RedirectProjectConfig.TokenPath, config[RedirectProjectConfig.TokenPath] },
 				{ RedirectProjectConfig.Filepath, "" }
 			};
 
-			MyForm form = new MyForm(data, "Add File");
+			MyForm form = new MyForm(data, "Add File", config);
 			DialogResult result = form.ShowDialog();
 
 			if(result == DialogResult.OK)
 			{
 				data = form.data;
 				args = "-add" +
-					" -d " + data[RedirectProjectConfig.RealRepositoryPath] +
+					" -d " + config[RedirectProjectConfig.RealRepositoryPath] +
 					" -f " + data[RedirectProjectConfig.Filepath] +
-					" -r " + data[RedirectProjectConfig.RedirectDirectoryPath] +
-					" -u " + data[RedirectProjectConfig.Username] +
-					" -e " + data[RedirectProjectConfig.Mail] +
-					" -t " + data[RedirectProjectConfig.TokenPath];
+					" -r " + config[RedirectProjectConfig.RedirectDirectoryPath] +
+					" -u " + config[RedirectProjectConfig.Username] +
+					" -e " + config[RedirectProjectConfig.Mail] +
+					" -t " + config[RedirectProjectConfig.TokenPath];
 
 				message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
 			}

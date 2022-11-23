@@ -103,21 +103,18 @@ namespace RedirectFileExtension
 
 			IDictionary<string, string> data = new Dictionary<string, string>()
 			{
-				{ RedirectProjectConfig.MergeOptions, "" },
-				{ RedirectProjectConfig.RealRepositoryPath, config[RedirectProjectConfig.RealRepositoryPath] },
-				{ RedirectProjectConfig.Username, config[RedirectProjectConfig.Username] },
-				{ RedirectProjectConfig.Mail, config[RedirectProjectConfig.Mail] }
+				{ RedirectProjectConfig.MergeOptions, "" }
 			};
 
-			MyForm form = new MyForm(data, "Merge");
+			MyForm form = new MyForm(data, "Merge", config);
 			DialogResult result = form.ShowDialog();
 			if(result == DialogResult.OK)
 			{
 				data = form.data;
 				args = "-merge " + data[RedirectProjectConfig.MergeOptions] +
-					" -d " + data[RedirectProjectConfig.RealRepositoryPath] +
-					" -u " + data[RedirectProjectConfig.Username] +
-					" -e " + data[RedirectProjectConfig.Mail];
+					" -d " + config[RedirectProjectConfig.RealRepositoryPath] +
+					" -u " + config[RedirectProjectConfig.Username] +
+					" -e " + config[RedirectProjectConfig.Mail];
 
 				message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
 			}

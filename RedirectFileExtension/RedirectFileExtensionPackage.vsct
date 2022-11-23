@@ -56,28 +56,28 @@
         <Parent guid="guidRedirectFileExtensionPackageCmdSet" id="MyMenuGroup" />
         <Icon guid="OpenFromRedirPng" id="1" />
         <Strings>
-          <ButtonText>Open File From Redir</ButtonText>
+          <ButtonText>Open File</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidRedirectFileExtensionPackageCmdSet" id="cmdidCommit" priority="0x0100" type="Button">
         <Parent guid="guidRedirectFileExtensionPackageCmdSet" id="MyMenuGroup" />
         <Icon guid="CommitPng" id="1" />
         <Strings>
-          <ButtonText>Commit</ButtonText>
+          <ButtonText>Upload</ButtonText>
         </Strings>
       </Button>
-      <Button guid="guidRedirectFileExtensionPackageCmdSet" id="cmdidPush" priority="0x0100" type="Button">
+      <!--<Button guid="guidRedirectFileExtensionPackageCmdSet" id="cmdidPush" priority="0x0100" type="Button">
         <Parent guid="guidRedirectFileExtensionPackageCmdSet" id="MyMenuGroup" />
         <Icon guid="PushPng" id="1" />
         <Strings>
           <ButtonText>Push</ButtonText>
         </Strings>
-      </Button>
+      </Button> -->
       <Button guid="guidRedirectFileExtensionPackageCmdSet" id="cmdidForcePush" priority="0x0100" type="Button">
         <Parent guid="guidRedirectFileExtensionPackageCmdSet" id="MyMenuGroup" />
         <Icon guid="ForcePushPng" id="1" />
         <Strings>
-          <ButtonText>Force Push</ButtonText>
+          <ButtonText>Force Upload</ButtonText>
         </Strings>
       </Button>
       <Button guid="guidRedirectFileExtensionPackageCmdSet" id="cmdidUpdateRepo" priority="0x0100" type="Button">
@@ -105,7 +105,7 @@
         <Parent guid="guidRedirectFileExtensionPackageCmdSet" id="MyMenuGroup" />
         <Icon guid="AddFilePng" id="1" />
         <Strings>
-          <ButtonText>Add File</ButtonText>
+          <ButtonText>Import File</ButtonText>
         </Strings>
       </Button>
     </Buttons>

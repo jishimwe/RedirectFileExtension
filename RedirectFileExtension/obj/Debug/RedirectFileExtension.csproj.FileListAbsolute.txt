@@ -22,3 +22,6 @@ C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\Re
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\extension.vsixmanifest
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\files.json
 C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\createTemplateManifests.cache
+C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\bin\Debug\en\RedirectFileExtension.resources.dll
+C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\RedirectFileExtension.MyForm.en.resources
+C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\obj\Debug\en\RedirectFileExtension.resources.dll
