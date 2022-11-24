@@ -96,7 +96,7 @@ namespace RedirectFileExtension
 			ThreadHelper.ThrowIfNotOnUIThread();
 			string commitResult = "Commit Failed . . .",
 				pushResult = "Upload Failed";
-			string title = "Commit";
+			string title = "Upload";
 
 			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
 

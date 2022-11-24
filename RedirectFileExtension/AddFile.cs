@@ -93,7 +93,7 @@ namespace RedirectFileExtension
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 			string message = "Failed to add file";
-			string title = "Add File";
+			string title = "Import File";
 
 			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
 

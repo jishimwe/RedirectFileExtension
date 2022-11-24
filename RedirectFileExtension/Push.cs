@@ -12,6 +12,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace RedirectFileExtension
 {
+	/// TODO: Remove? Obsolete?
 	/// <summary>
 	/// Command handler
 	/// </summary>

@@ -92,7 +92,7 @@ namespace RedirectFileExtension
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 			string message = "Force push not executed";
-			string title = "Force Push";
+			string title = "Force Upload";
 
 			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
 
