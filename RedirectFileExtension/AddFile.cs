@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.IO;
 using Task = System.Threading.Tasks.Task;
 using System.Windows.Forms;
 
@@ -109,9 +110,24 @@ namespace RedirectFileExtension
 			if(result == DialogResult.OK)
 			{
 				data = form.data;
+				string f = data[RedirectProjectConfig.Filepath];
+
+				//Copy the file to the repo if it's not already in it
+				if (!f.Contains(config[RedirectProjectConfig.RealRepositoryPath]))
+				{
+					if (!File.Exists(config[RedirectProjectConfig.RealRepositoryPath]))
+					{
+						FileInfo fi = new FileInfo(f);
+						string temp = f;
+						f = Path.Combine(config[RedirectProjectConfig.RealRepositoryPath], fi.Name);
+						File.Copy(temp, f);
+					}
+				}
+
+				f = f.Replace(config[RedirectProjectConfig.RealRepositoryPath], "");
 				args = "-add" +
 					" -d " + config[RedirectProjectConfig.RealRepositoryPath] +
-					" -f " + data[RedirectProjectConfig.Filepath] +
+					" -f " + f +
 					" -r " + config[RedirectProjectConfig.RedirectDirectoryPath] +
 					" -u " + config[RedirectProjectConfig.Username] +
 					" -e " + config[RedirectProjectConfig.Mail] +

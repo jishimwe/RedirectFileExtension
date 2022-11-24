@@ -94,8 +94,12 @@ namespace RedirectFileExtension
 			t.AcceptsTab = false;
 			t.AcceptsReturn = false;
 
-			string s = String.Empty;
+			CheckedListBox cb = new CheckedListBox();
+			RadioButton rb = new RadioButton();
+
+			string s = string.Empty;
 			bool isFile = true;
+			bool isMerge = false;
 			if (key.Contains("Path"))
 			{
 				s = "Open Folder";
@@ -104,6 +108,25 @@ namespace RedirectFileExtension
 			else if (key.Contains("File"))
 			{
 				s = "Open File";
+			}
+			else if (key == "MergeOptions")
+			{
+				isMerge = true;
+				List<string> mergeOptions = new List<string>()
+				{
+					"Union Local-Remote",
+					"Local Changes",
+					"Remote Changes",
+					"Merge formatted file"
+				};
+				g.Size = new Size(g.Width, g.Height * 2);
+				g.FlowDirection = FlowDirection.TopDown;
+				g.Controls.Add(l);
+				g.Controls.Add(RadioButtonCreator(mergeOptions[0], g, "0"));
+				g.Controls.Add(RadioButtonCreator(mergeOptions[1], g, "1"));
+				g.Controls.Add(RadioButtonCreator(mergeOptions[2], g, "2"));
+				g.Controls.Add(RadioButtonCreator(mergeOptions[3], g, "3", true));
+				return g;
 			}
 
 			Button b = new Button()
@@ -130,11 +153,36 @@ namespace RedirectFileExtension
 			};
 
 			g.Controls.Add(l);
-			g.Controls.Add(t);
+			if(!isMerge)
+				g.Controls.Add(t);
 			if (!string.IsNullOrEmpty(s))
 				g.Controls.Add(b);
 
 			return g;
+		}
+
+		private RadioButton RadioButtonCreator(string name, FlowLayoutPanel f, string index, bool defaultRB = false)
+		{
+			RadioButton rb = new RadioButton()
+			{
+				AutoSize = false,
+				Name = index,
+				Text = name,
+				AutoCheck = true,
+				Checked = defaultRB,
+				Size = new Size((int)(f.Width * 0.5), f.Height / 4),
+				
+			};
+			rb.CheckedChanged += Rb_CheckedChanged;
+			return rb;
+		}
+
+		private void Rb_CheckedChanged(object sender, EventArgs e)
+		{
+			RadioButton rb = sender as RadioButton;
+			//data[RedirectProjectConfig.MergeOptions] = rb.Name;
+			if (rb.Checked)
+				data[RedirectProjectConfig.MergeOptions] = rb.Name;
 		}
 
 		private void ListGroupBoxes()

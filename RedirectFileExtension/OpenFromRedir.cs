@@ -5,10 +5,13 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using EnvDTE;
+using EnvDTE80;
 using Task = System.Threading.Tasks.Task;
 
 namespace RedirectFileExtension
@@ -117,6 +120,19 @@ namespace RedirectFileExtension
 					" -b " + config[RedirectProjectConfig.BranchName];
 
 				message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
+			}
+
+			string[] ft = message.Split(' ');
+
+			DTE2 dte = Package.GetGlobalService(typeof(_DTE)) as DTE2;
+			try
+			{
+				dte.ExecuteCommand("File.OpenFIle", ft[1]);
+			}
+			catch (Exception exception)
+			{
+				Console.WriteLine(exception);
+				return;
 			}
 
 			// Show a message box to prove we were here
