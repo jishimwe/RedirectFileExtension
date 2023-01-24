@@ -74,7 +74,7 @@
 			this.Controls.Add(this.flowLayoutPanel1);
 			this.Controls.Add(this.groupBox1);
 			this.Name = "MyForm";
-			this.Opacity = 0.9D;
+			// this.Opacity = 0.9D;
 			this.Load += new System.EventHandler(this.MyForm_Load);
 			this.groupBox1.ResumeLayout(false);
 			this.ResumeLayout(false);

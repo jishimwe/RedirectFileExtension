@@ -49,7 +49,8 @@ namespace RedirectFileExtension
 			Filepath = "Filepath",
 			Message = "Message",
 			RedirectFile = "RedirectFile",
-			MergeOptions = "MergeOptions";
+			MergeOptions = "MergeOptions",
+			UtilsPath = "UtilsPath";
 
 		private static readonly string _configPath = "redirect.ini";
 
@@ -144,6 +145,7 @@ namespace RedirectFileExtension
 
 		private static void CreateOrOpenConfig()
 		{
+			string path = Directory.GetCurrentDirectory();
 			FileInfo fi = new FileInfo(_configPath);
 			if (!fi.Exists)
 			{
@@ -167,6 +169,7 @@ namespace RedirectFileExtension
 					Username + " = " + config[Username],
 					Mail + " = " + config[Mail],
 					TokenPath + " = " + config[TokenPath],
+					UtilsPath + " = " + config[UtilsPath],
 					"\n",
 					"[Optional]",
 					BranchName + " = " + config[BranchName],
@@ -199,11 +202,12 @@ namespace RedirectFileExtension
 				Username + " = ",
 				Mail + " = ",
 				TokenPath + " = ",
+				UtilsPath + " = ",
 				"\n",
 				"[Optional]",
 				BranchName + " = ",
 				RemoteName + " = ",
-				RefSpecs + " = "
+				RefSpecs + " = ",
 			};
 
 			File.WriteAllLines(path, toFile);

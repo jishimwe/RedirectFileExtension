@@ -112,7 +112,7 @@ namespace RedirectFileExtension
 				{ RedirectProjectConfig.Filepath, ""}
 			};
 
-			MyForm form = new MyForm(data, "Commit", config);
+			MyForm form = new MyForm(data, "Upload", config);
 			DialogResult result = form.ShowDialog();
 			if (result == DialogResult.OK)
 			{
