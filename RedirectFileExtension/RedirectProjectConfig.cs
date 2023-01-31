@@ -59,11 +59,20 @@ namespace RedirectFileExtension
 
 		public static readonly ProcessStartInfo psiUtilities = new ProcessStartInfo()
 		{
-			FileName = _redirectUtilitiesPath,
+			// FileName = _redirectUtilitiesPath,
+			FileName = GetUtilsPath(),
 			UseShellExecute = false,
 			RedirectStandardOutput = true,
 			RedirectStandardError = true
 		};
+
+		private static string GetUtilsPath()
+		{
+			IDictionary<string, string> config = ReadConfig();
+			if (config == null)
+				return null;
+			return config[UtilsPath];
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RedirectProjectConfig"/> class.
@@ -195,7 +204,7 @@ namespace RedirectFileExtension
 			{
 				"Usage: This a redirect config file - make sure the all the values are filled",
 				"\n",
-				RedirectRepositoryUrl +" =  ",
+				RedirectRepositoryUrl +" = ",
 				RedirectDirectoryPath + " = ",
 				RealRepositoryUrl + " = ",
 				RealRepositoryPath + " = ",
@@ -233,14 +242,22 @@ namespace RedirectFileExtension
 					}
 				}
 				file.Close();
+				return config;
 			}
 
-			return config;
+			return null;
 		}
 
 		public static string StartUtilitiesProcess(string args)
 		{
-			ProcessStartInfo psi = psiUtilities;
+			// ProcessStartInfo psi = psiUtilities;
+			ProcessStartInfo psi = new ProcessStartInfo
+			{
+				FileName = GetUtilsPath(),
+				UseShellExecute = false,
+				RedirectStandardOutput = true,
+				RedirectStandardError = true
+			};
 			psi.Arguments = args;
 			Process proc = new Process() { StartInfo = psi };
 			proc.Start();
