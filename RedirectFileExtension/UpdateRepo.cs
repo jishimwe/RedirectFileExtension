@@ -1,12 +1,7 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
 namespace RedirectFileExtension
@@ -94,35 +89,9 @@ namespace RedirectFileExtension
 			string message = "Repository not updated";
 			string title = "Update Repo";
 
-			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
-
 			string args = "-update" +
-			              " -d " + config[RedirectProjectConfig.RealRepositoryPath] +
-			              " -u " + config[RedirectProjectConfig.Username] +
-			              " -e " + config[RedirectProjectConfig.Mail] +
-			              " -t " + config[RedirectProjectConfig.TokenPath];
+			              " -conf " + RedirectProjectConfig.GetConfigFilePath();
 
-			/*IDictionary<string, string> data = new Dictionary<string, string>()
-			{
-				{ RedirectProjectConfig.RealRepositoryPath, config[RedirectProjectConfig.RealRepositoryPath] },
-				{ RedirectProjectConfig.Username, config[RedirectProjectConfig.Username] },
-				{ RedirectProjectConfig.Mail, config[RedirectProjectConfig.Mail] },
-				{ RedirectProjectConfig.TokenPath, config[RedirectProjectConfig.TokenPath] }
-			};*/
-
-			/*MyForm form = new MyForm(data, "Update");
-			DialogResult result = form.ShowDialog();
-			if(result == DialogResult.OK)
-			{
-				data = form.data;
-				args = "-update" +
-					 " -d " + data[RedirectProjectConfig.RealRepositoryPath] +
-					 " -u " + data[RedirectProjectConfig.Username] +
-					 " -e " + data[RedirectProjectConfig.Mail] +
-					 " -t " + data[RedirectProjectConfig.TokenPath];
-
-				message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
-			}*/
 			message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
 
 			// Show a message box to prove we were here

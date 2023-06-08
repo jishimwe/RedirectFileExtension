@@ -121,9 +121,6 @@
     <Content Include="Resources\UpdateRepo.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MyForm.en.resx">
-      <DependentUpon>MyForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="MyForm.resx">
       <DependentUpon>MyForm.cs</DependentUpon>
     </EmbeddedResource>

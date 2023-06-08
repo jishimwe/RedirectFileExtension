@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RedirectFileExtension
@@ -14,9 +9,9 @@ namespace RedirectFileExtension
 	{
 		public IDictionary<string, string> data;
 		public IDictionary<string, string> config;
-		private IDictionary<string, string> _backup;
-		private string _formName = "MyForm";
-		private bool _redir;
+		private readonly IDictionary<string, string> _backup;
+		private readonly string _formName;
+		private readonly bool _redir;
 		public MyForm(IDictionary<string, string> data, string name, IDictionary<string, string> config = null, bool redir = false)
 		{
 			_formName = name;
@@ -33,24 +28,23 @@ namespace RedirectFileExtension
 			this.Text = _formName;
 		}
 
-		private void okButton_Click(object sender, EventArgs e)
+		private void OkButton_Click(object sender, EventArgs e)
 		{
 			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}
 
-		private void cancelButton_Click(object sender, EventArgs e)
+		private void CancelButton_Click(object sender, EventArgs e)
 		{
 			data = _backup;
 			this.DialogResult = DialogResult.Cancel;
 			this.Close();
 		}
 
-		private void textBox_TextChanged(object sender, EventArgs e)
+		private void TextBox_TextChanged(object sender, EventArgs e)
 		{
 			TextBox tb = sender as TextBox;
 			data[tb.Name] = tb.Text;
-			//Console.WriteLine("Whats happening?");
 		}
 
 		private FlowLayoutPanel GetGroupBox(string title, string key, string text)
@@ -72,7 +66,6 @@ namespace RedirectFileExtension
 				AutoSize = false,
 				Name = key,
 				Text = key,
-				//Dock = DockStyle.Left,
 				Size = new Size((int)(g.Width * 0.18), 20),
 				TextAlign = ContentAlignment.MiddleRight,
 			};
@@ -83,23 +76,14 @@ namespace RedirectFileExtension
 				TextAlign = HorizontalAlignment.Left,
 				Name = key,
 				Text = text,
-				//Dock = DockStyle.Fill,
-				//Location = new Point((int) (l.Location.X + g.Size.Width * 0.25), (int) (l.Location.Y + g.Size.Width * 0.5)),
-				//Left = (int)(l.Width),
-				//Top = (int)(g.Height * 0.25),
-				//Anchor = AnchorStyles.Top | AnchorStyles.Bottom,
 				Size = new Size((int)(g.Width * 0.68), 20),
 			};
-			t.TextChanged += textBox_TextChanged;
+			t.TextChanged += TextBox_TextChanged;
 			t.AcceptsTab = false;
 			t.AcceptsReturn = false;
 
-			CheckedListBox cb = new CheckedListBox();
-			RadioButton rb = new RadioButton();
-
 			string s = string.Empty;
 			bool isFile = true;
-			bool isMerge = false;
 			if (key.Contains("Path"))
 			{
 				s = "Open Folder";
@@ -111,7 +95,6 @@ namespace RedirectFileExtension
 			}
 			else if (key == "MergeOptions")
 			{
-				isMerge = true;
 				List<string> mergeOptions = new List<string>()
 				{
 					"Union Local-Remote",
@@ -133,7 +116,6 @@ namespace RedirectFileExtension
 			{
 				Name = s,
 				Text = s,
-				//Dock = DockStyle.Right,
 				Size = new Size((int)(g.Width * 0.1), 20),
 			};
 			b.Click += (sender, args) =>
@@ -153,8 +135,7 @@ namespace RedirectFileExtension
 			};
 
 			g.Controls.Add(l);
-			if(!isMerge)
-				g.Controls.Add(t);
+			g.Controls.Add(t);
 			if (!string.IsNullOrEmpty(s))
 				g.Controls.Add(b);
 

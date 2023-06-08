@@ -11511,24 +11511,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\test\\.nuget\\packages\\": {},
+    "C:\\Users\\jean-paul\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\test\\Documents\\RedirectFileExtension\\RedirectFileExtension\\RedirectFileExtension.csproj",
+      "projectUniqueName": "C:\\repositories\\RedirectFileExtension\\RedirectFileExtension\\RedirectFileExtension.csproj",
       "projectName": "RedirectFileExtension",
-      "projectPath": "C:\\Users\\test\\Documents\\RedirectFileExtension\\RedirectFileExtension\\RedirectFileExtension.csproj",
-      "packagesPath": "C:\\Users\\test\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\test\\Documents\\RedirectFileExtension\\RedirectFileExtension\\obj\\",
+      "projectPath": "C:\\repositories\\RedirectFileExtension\\RedirectFileExtension\\RedirectFileExtension.csproj",
+      "packagesPath": "C:\\Users\\jean-paul\\.nuget\\packages\\",
+      "outputPath": "C:\\repositories\\RedirectFileExtension\\RedirectFileExtension\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\test\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\jean-paul\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

@@ -48,7 +48,7 @@ namespace RedirectFileExtension
 			// Do any initialization that requires the UI thread after switching to the UI thread.
 			await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 		    await OpenFromRedir.InitializeAsync(this);
-		    await Commit.InitializeAsync(this);
+		    await Upload.InitializeAsync(this);
 		    await Push.InitializeAsync(this);
 		    await ForcePush.InitializeAsync(this);
 		    await UpdateRepo.InitializeAsync(this);

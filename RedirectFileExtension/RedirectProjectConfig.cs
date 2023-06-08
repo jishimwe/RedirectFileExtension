@@ -3,13 +3,8 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Data;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.RpcContracts.DiagnosticManagement;
 using Task = System.Threading.Tasks.Task;
 using System.Windows.Forms;
 
@@ -52,26 +47,12 @@ namespace RedirectFileExtension
 			MergeOptions = "MergeOptions",
 			UtilsPath = "UtilsPath";
 
-		private static readonly string _configPath = "redirect.ini";
-
-		public static readonly string _redirectUtilitiesPath =
-			@"C:\Users\test\Documents\RedirectFileExtension\RedirectFileExtension\RedirectFilesUtilities\RedirectFilesUtilities.exe";
-
-		public static readonly ProcessStartInfo psiUtilities = new ProcessStartInfo()
-		{
-			// FileName = _redirectUtilitiesPath,
-			FileName = GetUtilsPath(),
-			UseShellExecute = false,
-			RedirectStandardOutput = true,
-			RedirectStandardError = true
-		};
+		public static readonly string _configPath = "redirect.ini";
 
 		private static string GetUtilsPath()
 		{
 			IDictionary<string, string> config = ReadConfig();
-			if (config == null)
-				return null;
-			return config[UtilsPath];
+			return config?[UtilsPath];
 		}
 
 		/// <summary>
@@ -102,7 +83,7 @@ namespace RedirectFileExtension
 		/// <summary>
 		/// Gets the service provider from the owner package.
 		/// </summary>
-		private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider
+		private IAsyncServiceProvider ServiceProvider
 		{
 			get
 			{
@@ -135,7 +116,7 @@ namespace RedirectFileExtension
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
 			//string message = string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.GetType().FullName);
-			string message = "Opening the configuration file...";
+			string message = "Redirect Project Configuration file saved!";
 			string title = "RedirectProjectConfig";
 
 			CreateOrOpenConfig();
@@ -154,7 +135,6 @@ namespace RedirectFileExtension
 
 		private static void CreateOrOpenConfig()
 		{
-			string path = Directory.GetCurrentDirectory();
 			FileInfo fi = new FileInfo(_configPath);
 			if (!fi.Exists)
 			{
@@ -165,37 +145,28 @@ namespace RedirectFileExtension
 			MyForm form = new MyForm(config, "Configuration");
 			DialogResult result = form.ShowDialog();
 
-			if (result == DialogResult.OK)
+			if (result != DialogResult.OK) return;
+			string[] toFile =
 			{
-				string[] toFile =
-				{
-					"Usage: This a redirect config file - make sure the all the values are filled",
-					"\n",
-					RedirectRepositoryUrl + " = " + config[RedirectRepositoryUrl],
-					RedirectDirectoryPath + " = " + config[RedirectDirectoryPath],
-					RealRepositoryUrl + " = " + config[RealRepositoryUrl],
-					RealRepositoryPath + " = " + config[RealRepositoryPath],
-					Username + " = " + config[Username],
-					Mail + " = " + config[Mail],
-					TokenPath + " = " + config[TokenPath],
-					UtilsPath + " = " + config[UtilsPath],
-					"\n",
-					"[Optional]",
-					BranchName + " = " + config[BranchName],
-					RemoteName + " = " + config[RemoteName],
-					RefSpecs + " = " + config[RefSpecs]
-				};
-				//File.WriteAllLines(_configPath, toFile);
-				
-				File.WriteAllText(_configPath, string.Join("\n", toFile));
-			}
-
-			/*ProcessStartInfo psi = new ProcessStartInfo()
-			{
-				FileName = _configPath,
-				UseShellExecute = true
+				"Usage: This a redirect config file - make sure the all the values are filled",
+				"\n",
+				RedirectRepositoryUrl + " = " + config[RedirectRepositoryUrl],
+				RedirectDirectoryPath + " = " + config[RedirectDirectoryPath],
+				RealRepositoryUrl + " = " + config[RealRepositoryUrl],
+				RealRepositoryPath + " = " + config[RealRepositoryPath],
+				Username + " = " + config[Username],
+				Mail + " = " + config[Mail],
+				TokenPath + " = " + config[TokenPath],
+				UtilsPath + " = " + config[UtilsPath],
+				"\n",
+				"[Optional]",
+				BranchName + " = " + config[BranchName],
+				RemoteName + " = " + config[RemoteName],
+				RefSpecs + " = " + config[RefSpecs]
 			};
-			Process.Start(psi);*/
+			//File.WriteAllLines(_configPath, toFile);
+				
+			File.WriteAllText(_configPath, string.Join("\n", toFile));
 		}
 
 		private static void CreateConfig(string path)
@@ -225,27 +196,24 @@ namespace RedirectFileExtension
 		public static IDictionary<string, string> ReadConfig()
 		{
 			IDictionary<string, string> config = new Dictionary<string, string>();
-			if (File.Exists(_configPath))
+			if (!File.Exists(_configPath)) return null;
+			StreamReader file = new StreamReader(_configPath);
+			string ln = file.ReadLine();
+			while ((ln = file.ReadLine()) != null) 
 			{
-				StreamReader file = new StreamReader(_configPath);
-				string ln = file.ReadLine();
-				while ((ln = file.ReadLine()) != null) 
+				if (string.IsNullOrEmpty(ln) || string.IsNullOrWhiteSpace(ln))
 				{
-					if (string.IsNullOrEmpty(ln) || string.IsNullOrWhiteSpace(ln))
-					{
-						continue;
-					}
-					string[] stabs = ln.Split(' ');
-					if (stabs.Length == 3)
-					{
-						config.Add(stabs[0], stabs[2]);
-					}
+					continue;
 				}
-				file.Close();
-				return config;
+				string[] stabs = ln.Split(' ');
+				if (stabs.Length == 3)
+				{
+					config.Add(stabs[0], stabs[2]);
+				}
 			}
+			file.Close();
+			return config;
 
-			return null;
 		}
 
 		public static string StartUtilitiesProcess(string args)
@@ -256,9 +224,9 @@ namespace RedirectFileExtension
 				FileName = GetUtilsPath(),
 				UseShellExecute = false,
 				RedirectStandardOutput = true,
-				RedirectStandardError = true
+				RedirectStandardError = true,
+				Arguments = args
 			};
-			psi.Arguments = args;
 			Process proc = new Process() { StartInfo = psi };
 			proc.Start();
 
@@ -269,6 +237,14 @@ namespace RedirectFileExtension
 			}
 
 			return null;
+		}
+
+		public static string GetConfigFilePath()
+		{
+			if (!File.Exists(_configPath)) return "";
+			FileInfo fi = new FileInfo(_configPath);
+			return fi.FullName;
+
 		}
 	}
 }

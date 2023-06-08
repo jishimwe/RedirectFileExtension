@@ -3,12 +3,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Forms;
 using EnvDTE;
 using EnvDTE80;
@@ -48,7 +42,7 @@ namespace RedirectFileExtension
 			commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
 			var menuCommandID = new CommandID(CommandSet, CommandId);
-			var menuItem = new MenuCommand(this.Execute, menuCommandID);
+			var menuItem = new MenuCommand(Execute, menuCommandID);
 			commandService.AddCommand(menuItem);
 		}
 
@@ -64,11 +58,11 @@ namespace RedirectFileExtension
 		/// <summary>
 		/// Gets the service provider from the owner package.
 		/// </summary>
-		private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider
+		private IAsyncServiceProvider ServiceProvider
 		{
 			get
 			{
-				return this.package;
+				return package;
 			}
 		}
 
@@ -101,8 +95,6 @@ namespace RedirectFileExtension
 
 			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
 
-			string args = "-open ";
-
 			IDictionary<string, string> data = new Dictionary<string, string>()
 			{
 				{ RedirectProjectConfig.RedirectFile, "" }
@@ -114,10 +106,9 @@ namespace RedirectFileExtension
 			if (result == DialogResult.OK)
 			{
 				data = form.data;
-				args = "-open" +
-					" -r " + data[RedirectProjectConfig.RedirectFile] + 
-					" -d " + config[RedirectProjectConfig.RealRepositoryPath] + 
-					" -b " + config[RedirectProjectConfig.BranchName];
+				string args = "-open" +
+				              " -f " + data[RedirectProjectConfig.RedirectFile] +
+				              " -conf " + RedirectProjectConfig.GetConfigFilePath();
 
 				message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
 			}
@@ -127,7 +118,7 @@ namespace RedirectFileExtension
 			DTE2 dte = Package.GetGlobalService(typeof(_DTE)) as DTE2;
 			try
 			{
-				dte.ExecuteCommand("File.OpenFIle", ft[1]);
+				dte?.ExecuteCommand("File.OpenFIle", ft[1]);
 			}
 			catch (Exception exception)
 			{
@@ -137,7 +128,7 @@ namespace RedirectFileExtension
 
 			// Show a message box to prove we were here
 			VsShellUtilities.ShowMessageBox(
-				this.package,
+				package,
 				message,
 				title,
 				OLEMSGICON.OLEMSGICON_INFO,

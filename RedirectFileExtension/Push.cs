@@ -3,10 +3,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
@@ -98,12 +94,6 @@ namespace RedirectFileExtension
 
 			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
 
-			string args = "-push" +
-			              " -d " + config[RedirectProjectConfig.RealRepositoryPath] +
-			              " -t " + config[RedirectProjectConfig.TokenPath] +
-			              " -u " + config[RedirectProjectConfig.Username] + 
-			              " -e " + config[RedirectProjectConfig.Mail];
-
 			IDictionary<string, string> data = new Dictionary<string, string>()
 			{
 				{ RedirectProjectConfig.RealRepositoryPath, config[RedirectProjectConfig.RealRepositoryPath] },
@@ -117,7 +107,7 @@ namespace RedirectFileExtension
 			if (result == DialogResult.OK)
 			{
 				data = form.data;
-				args = "-push" +
+				string args = "-push" +
 						  " -d " + data[RedirectProjectConfig.RealRepositoryPath] +
 						  " -t " + data[RedirectProjectConfig.TokenPath] +
 						  " -u " + data[RedirectProjectConfig.Username] +

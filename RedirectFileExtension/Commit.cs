@@ -1,14 +1,8 @@
-﻿using Microsoft.VisualStudio.Package;
-using Microsoft.VisualStudio.Shell;
+﻿using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
@@ -17,7 +11,7 @@ namespace RedirectFileExtension
 	/// <summary>
 	/// Command handler
 	/// </summary>
-	internal sealed class Commit
+	internal sealed class Upload
 	{
 		/// <summary>
 		/// Command ID.
@@ -35,12 +29,12 @@ namespace RedirectFileExtension
 		private readonly AsyncPackage package;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Commit"/> class.
+		/// Initializes a new instance of the <see cref="Upload"/> class.
 		/// Adds our command handlers for menu (commands must exist in the command table file)
 		/// </summary>
 		/// <param name="package">Owner package, not null.</param>
 		/// <param name="commandService">Command service to add command to, not null.</param>
-		private Commit(AsyncPackage package, OleMenuCommandService commandService)
+		private Upload(AsyncPackage package, OleMenuCommandService commandService)
 		{
 			this.package = package ?? throw new ArgumentNullException(nameof(package));
 			commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
@@ -53,7 +47,7 @@ namespace RedirectFileExtension
 		/// <summary>
 		/// Gets the instance of the command.
 		/// </summary>
-		public static Commit Instance
+		public static Upload Instance
 		{
 			get;
 			private set;
@@ -62,7 +56,7 @@ namespace RedirectFileExtension
 		/// <summary>
 		/// Gets the service provider from the owner package.
 		/// </summary>
-		private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider
+		private IAsyncServiceProvider ServiceProvider
 		{
 			get
 			{
@@ -81,7 +75,7 @@ namespace RedirectFileExtension
 			await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
 			OleMenuCommandService commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-			Instance = new Commit(package, commandService);
+			Instance = new Upload(package, commandService);
 		}
 
 		/// <summary>
@@ -100,12 +94,6 @@ namespace RedirectFileExtension
 
 			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
 
-			string args = "-commit" +
-			              @" -f app\src\main\AndroidManifest.xml" +
-			              " -d " + config[RedirectProjectConfig.RealRepositoryPath] +
-			              " -m \"Visual Studio extensions commit\"" +
-			              " -u " + config[RedirectProjectConfig.Username ] +
-			              " -e " + config[RedirectProjectConfig.Mail];
 			IDictionary<string, string> data = new Dictionary<string, string>()
 			{
 				{ RedirectProjectConfig.Message, ""},
@@ -117,28 +105,25 @@ namespace RedirectFileExtension
 			if (result == DialogResult.OK)
 			{
 				data = form.data;
-				args = "-commit" +
-				" -f " + data[RedirectProjectConfig.Filepath] +
-				" -d " + config[RedirectProjectConfig.RealRepositoryPath] +
-				" -m " + data[RedirectProjectConfig.Message] +
-				" -u " + config[RedirectProjectConfig.Username] +
-				" -e " + config[RedirectProjectConfig.Mail];
+				string args = "-commit" +
+				              " -f " + data[RedirectProjectConfig.Filepath] +
+				              " -m " + data[RedirectProjectConfig.Message] +
+				              " -conf " + RedirectProjectConfig.GetConfigFilePath(); 
 
 				commitResult = RedirectProjectConfig.StartUtilitiesProcess(args) ?? commitResult;
+				if (commitResult != "Commit Failed . . ." || !commitResult.Contains("Failed to commit"))
+				{
+					args = "-push" +
+					       " -conf " + RedirectProjectConfig.GetConfigFilePath();
 
-				args = "-push" +
-				       " -d " + config[RedirectProjectConfig.RealRepositoryPath] +
-				       " -t " + config[RedirectProjectConfig.TokenPath] +
-				       " -u " + config[RedirectProjectConfig.Username] +
-				       " -e " + config[RedirectProjectConfig.Mail];
-
-				pushResult = RedirectProjectConfig.StartUtilitiesProcess(args) ?? pushResult;
+					pushResult = RedirectProjectConfig.StartUtilitiesProcess(args) ?? pushResult;
+				}
 			}
 
 			// Show a message box to prove we were here
 			VsShellUtilities.ShowMessageBox(
 				this.package,
-				pushResult, 
+				 commitResult + "\n" + pushResult, 
 				title, 
 				OLEMSGICON.OLEMSGICON_INFO, 
 				OLEMSGBUTTON.OLEMSGBUTTON_OK, 

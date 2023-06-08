@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
@@ -59,7 +57,7 @@ namespace RedirectFileExtension
 		/// <summary>
 		/// Gets the service provider from the owner package.
 		/// </summary>
-		private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider
+		private IAsyncServiceProvider ServiceProvider
 		{
 			get
 			{
@@ -96,11 +94,6 @@ namespace RedirectFileExtension
 
 			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
 
-			string args = "-merge 0" +
-			              " -d " + config[RedirectProjectConfig.RealRepositoryPath] +
-			              " -u " + config[RedirectProjectConfig.Username] + 
-			              " -e " + config[RedirectProjectConfig.Mail];
-
 			IDictionary<string, string> data = new Dictionary<string, string>()
 			{
 				{ RedirectProjectConfig.MergeOptions, "" }
@@ -111,10 +104,9 @@ namespace RedirectFileExtension
 			if(result == DialogResult.OK)
 			{
 				data = form.data;
-				args = "-merge " + data[RedirectProjectConfig.MergeOptions] +
-					" -d " + config[RedirectProjectConfig.RealRepositoryPath] +
-					" -u " + config[RedirectProjectConfig.Username] +
-					" -e " + config[RedirectProjectConfig.Mail];
+				string args = "-merge " +
+				              " -conf " + RedirectProjectConfig.GetConfigFilePath() +
+				              " -mo " + data[RedirectProjectConfig.MergeOptions];
 
 				message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
 			}

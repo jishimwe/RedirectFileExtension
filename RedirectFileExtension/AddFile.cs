@@ -2,9 +2,6 @@
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
-using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.IO;
 using Task = System.Threading.Tasks.Task;
@@ -44,7 +41,7 @@ namespace RedirectFileExtension
 			commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 
 			var menuCommandID = new CommandID(CommandSet, CommandId);
-			var menuItem = new MenuCommand(this.Execute, menuCommandID);
+			var menuItem = new MenuCommand(Execute, menuCommandID);
 			commandService.AddCommand(menuItem);
 		}
 
@@ -60,11 +57,11 @@ namespace RedirectFileExtension
 		/// <summary>
 		/// Gets the service provider from the owner package.
 		/// </summary>
-		private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider
+		private IAsyncServiceProvider ServiceProvider
 		{
 			get
 			{
-				return this.package;
+				return package;
 			}
 		}
 
@@ -97,8 +94,6 @@ namespace RedirectFileExtension
 
 			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
 
-			string args = "-add";
-
 			IDictionary<string, string> data = new Dictionary<string, string>()
 			{
 				{ RedirectProjectConfig.Filepath, "" }
@@ -124,21 +119,17 @@ namespace RedirectFileExtension
 					}
 				}
 
-				f = f.Replace(config[RedirectProjectConfig.RealRepositoryPath], "");
-				args = "-add" +
-					" -d " + config[RedirectProjectConfig.RealRepositoryPath] +
-					" -f " + f +
-					" -r " + config[RedirectProjectConfig.RedirectDirectoryPath] +
-					" -u " + config[RedirectProjectConfig.Username] +
-					" -e " + config[RedirectProjectConfig.Mail] +
-					" -t " + config[RedirectProjectConfig.TokenPath];
+				f = f.Replace(config[RedirectProjectConfig.RealRepositoryPath]+"\\", "");
+				string args = "-add" +
+				              " -f " + f +
+				              " -conf " + RedirectProjectConfig.GetConfigFilePath();
 
 				message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;
 			}
 
 			// Show a message box to prove we were here
 			VsShellUtilities.ShowMessageBox(
-				this.package,
+				package,
 				message,
 				title,
 				OLEMSGICON.OLEMSGICON_INFO,

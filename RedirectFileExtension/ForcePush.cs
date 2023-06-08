@@ -3,9 +3,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
@@ -59,7 +56,7 @@ namespace RedirectFileExtension
 		/// <summary>
 		/// Gets the service provider from the owner package.
 		/// </summary>
-		private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider
+		private IAsyncServiceProvider ServiceProvider
 		{
 			get
 			{
@@ -91,29 +88,11 @@ namespace RedirectFileExtension
 		private void Execute(object sender, EventArgs e)
 		{
 			ThreadHelper.ThrowIfNotOnUIThread();
-			string message = "Force push not executed";
 			string commitResult = "Commit failed";
 			string pushResult = "Push failed";
 			string title = "Force Upload";
 
 			IDictionary<string, string> config = RedirectProjectConfig.ReadConfig();
-
-			/*string args = "-forcePush" +
-				" -d " + config[RedirectProjectConfig.RealRepositoryPath] +
-				" -t " + config[RedirectProjectConfig.TokenPath] +
-				" -u " + config[RedirectProjectConfig.Username] +
-				" -e " + config[RedirectProjectConfig.Mail];
-
-			message = RedirectProjectConfig.StartUtilitiesProcess(args) ?? message;*/
-
-			// TODO: Test this
-
-			string args = "-commit" +
-			              @" -f app\src\main\AndroidManifest.xml" +
-			              " -d " + config[RedirectProjectConfig.RealRepositoryPath] +
-			              " -m \"Visual Studio extensions commit\"" +
-			              " -u " + config[RedirectProjectConfig.Username] +
-			              " -e " + config[RedirectProjectConfig.Mail];
 			IDictionary<string, string> data = new Dictionary<string, string>()
 			{
 				{ RedirectProjectConfig.Message, ""},
@@ -125,20 +104,15 @@ namespace RedirectFileExtension
 			if (result == DialogResult.OK)
 			{
 				data = form.data;
-				args = "-commit" +
-				       " -f " + data[RedirectProjectConfig.Filepath] +
-				       " -d " + config[RedirectProjectConfig.RealRepositoryPath] +
-				       " -m " + data[RedirectProjectConfig.Message] +
-				       " -u " + config[RedirectProjectConfig.Username] +
-				       " -e " + config[RedirectProjectConfig.Mail];
+				string args = "-commit" +
+				              " -f " + data[RedirectProjectConfig.Filepath] +
+				              " -m " + data[RedirectProjectConfig.Message] +
+				              " -conf " + RedirectProjectConfig.GetConfigFilePath();
 
 				commitResult = RedirectProjectConfig.StartUtilitiesProcess(args) ?? commitResult;
 
 				args = "-forcePush" +
-				       " -d " + config[RedirectProjectConfig.RealRepositoryPath] +
-				       " -t " + config[RedirectProjectConfig.TokenPath] +
-				       " -u " + config[RedirectProjectConfig.Username] +
-				       " -e " + config[RedirectProjectConfig.Mail];
+				       " -conf " + RedirectProjectConfig.GetConfigFilePath();
 
 				pushResult = RedirectProjectConfig.StartUtilitiesProcess(args) ?? pushResult;
 			}
@@ -146,7 +120,7 @@ namespace RedirectFileExtension
 			// Show a message box to prove we were here
 			VsShellUtilities.ShowMessageBox(
 				this.package,
-				pushResult,
+				commitResult + "\n" + pushResult,
 				title,
 				OLEMSGICON.OLEMSGICON_INFO,
 				OLEMSGBUTTON.OLEMSGBUTTON_OK,
